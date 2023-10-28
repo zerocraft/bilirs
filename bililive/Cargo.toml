@@ -7,6 +7,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/zerocraft/bilirs"
 homepage = "https://github.com/zerocraft/bilirs"
 authors = ["zerocraft <zero.craft@hotmail.com>"]
+include = ["logo.png"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -22,4 +23,4 @@ serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = "1.0.107"
 thiserror = "1.0.50"
 tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread", "time"] }
-bililivecmd = { version = "0.1.0", path = "../bililivecmd" }
+bililivecmd = { version = "0.1.1", path = "../bililivecmd" }
