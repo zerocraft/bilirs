@@ -4,7 +4,7 @@
 
 ![project](doc/rustrs.png)
 
-[bilirs]
+[bilirs](https://github.com/zerocraft/bilirs)
 
 ## 功能
 

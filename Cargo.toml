@@ -6,7 +6,8 @@ authors = ["zerocraft <zero.craft@hotmail.com>"]
 description = "Bilibili open-live SDK by Rust"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-repository = ""
+repository = "https://github.com/zerocraft/bilirs"
+homepage = "https://github.com/zerocraft/bilirs"
 publish = ["bilirs"]
 
 [lib]
