@@ -38,6 +38,12 @@
 
 ## 使用
 
+### 安装
+
+``` shell
+cargo add bililivex
+```
+
 基础使用方法
 
 ``` rust
