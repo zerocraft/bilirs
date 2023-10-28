@@ -1,0 +1,20 @@
+[package]
+name = "bililive"
+version = "0.1.0"
+edition = "2021"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures = "0.3.28"
+async-trait = "0.1.74"
+data-encoding = "2.4.0"
+dotenvy = "0.15.7"
+md5 = "0.7.0"
+rand = "0.8.5"
+reqwest = "0.11.22"
+ring = "0.17.5"
+serde = { version = "1.0.189", features = ["serde_derive"] }
+serde_json = "1.0.107"
+thiserror = "1.0.50"
+tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread", "time"] }
+bililivecmd = { version = "0.1.0", path = "../bililivecmd" }
