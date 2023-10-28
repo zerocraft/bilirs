@@ -18,4 +18,5 @@ Cargo.lock
 .cargo
 .env
 
+logo.png
 *.psd
