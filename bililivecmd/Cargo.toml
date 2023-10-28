@@ -1,6 +1,6 @@
 [package]
 name = "bililivecmd"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "cmd agent \nBilibili open-live SDK by Rust"
 license = "MIT OR Apache-2.0"

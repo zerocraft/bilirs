@@ -290,8 +290,8 @@ mod tests {
     #[tokio::test]
     async fn test_agent() {
         let mut agent = CmdAgent::new(CmdAgentParams {
-            auth_body: "{\"roomid\":10033527,\"protover\":2,\"uid\":7659542009158007,\"key\":\"WuS2DBZZ1lK8096zXSK6GlOe1psY-rgaDqtWbwUXuReDNoK2fLU67KvNa1-PzBASA5k8VTOsyPzFVICC0DMO0MJ_kHhLR2So3lYQN9MD3FLORLGJVKQ3y1Xx6YgFXATBbFOEewaM3BDFZSDZkTg28C8zDngwrAib\",\"group\":\"open\"}".to_string(),
-            server_url: "wss://tx-sh-live-comet-14.chat.bilibili.com:443/sub".to_string(),
+            auth_body: "".to_string(),
+            server_url: "".to_string(),
             ..Default::default()
         });
         let handle = Arc::new(TestHandler {});
