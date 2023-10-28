@@ -1,13 +1,12 @@
 [package]
 name = "bililivecmd"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "cmd agent \nBilibili open-live SDK by Rust"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/zerocraft/bilirs"
 homepage = "https://github.com/zerocraft/bilirs"
 authors = ["zerocraft <zero.craft@hotmail.com>"]
-include = ["**/*.rs", "Cargo.toml", "logo.png", "README.md"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
