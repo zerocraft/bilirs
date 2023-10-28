@@ -15,6 +15,7 @@ Cargo.lock
 *.pdb
 
 .vscode
+.cargo
 .env
 
 *.psd

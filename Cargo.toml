@@ -1,19 +1,3 @@
-[package]
-name = "bilirs"
-version = "0.1.0"
-edition = "2021"
-authors = ["zerocraft <zero.craft@hotmail.com>"]
-description = "Bilibili open-live SDK by Rust"
-license = "MIT OR Apache-2.0"
-readme = "README.md"
-repository = "https://github.com/zerocraft/bilirs"
-homepage = "https://github.com/zerocraft/bilirs"
-publish = ["bilirs"]
-
-[lib]
-name = "bililive"
-path = "bilibli/src/lib.rs"
-
 [workspace]
 members = ["bililive", "bililivecmd"]
 resolver = "2"
