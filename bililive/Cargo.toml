@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2021"
 description = "service \nBilibili open-live SDK by Rust"
 license = "MIT OR Apache-2.0"
-readme = "README.md"
 repository = "https://github.com/zerocraft/bilirs"
 homepage = "https://github.com/zerocraft/bilirs"
 authors = ["zerocraft <zero.craft@hotmail.com>"]
