@@ -20,6 +20,7 @@ use crate::proto::LIVE_OPEN_PLATFORM_DM;
 
 pub mod handle;
 pub mod proto;
+pub mod test_handle;
 
 pub struct CmdAgent {
     is_working: bool,
@@ -283,7 +284,7 @@ async fn handle(
 
 #[cfg(test)]
 mod tests {
-    use crate::{handle::TestHandler, CmdAgent, CmdAgentParams};
+    use crate::{test_handle::TestHandler, CmdAgent, CmdAgentParams};
     use std::sync::Arc;
     use tokio::time::Duration;
 
@@ -295,10 +296,10 @@ mod tests {
             ..Default::default()
         });
         let handle = Arc::new(TestHandler {});
-        // let raw = Arc::clone(&handle);
-        // agent.raw_handles.lock().await.push(raw);
-        // let op = Arc::clone(&handle);
-        // agent.op_handles.lock().await.push(op);
+        let raw = Arc::clone(&handle);
+        agent.raw_handles.lock().await.push(raw);
+        let op = Arc::clone(&handle);
+        agent.op_handles.lock().await.push(op);
         let cmd = Arc::clone(&handle);
         agent.cmd_handles.lock().await.push(cmd);
         agent.start().await;

@@ -158,7 +158,6 @@ mod tests {
     use crate::{
         auth::Auth, env_access_key, env_access_secret, env_app_id, env_live_code, ApiService,
     };
-    use bililivecmd::handle::TestHandler;
     use std::sync::Arc;
     use tokio::time::Duration;
 
@@ -175,6 +174,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_service_start() {
+        use bililivecmd::test_handle::TestHandler;
         // 使用AccessKey和Secret建立服务
         let mut service = ApiService::new(Auth::new(env_access_key(), env_access_secret()));
         // 使用直播code和app_id开启项目，在启动服务后会自动按频率发送心跳
@@ -193,6 +193,32 @@ mod tests {
         // let op = Arc::clone(&handle);
         // agent.op_handles.lock().await.push(op);
         // 处理弹幕消息包（Proto.Operation==5）
+        let cmd = Arc::clone(&handle);
+        agent.cmd_handles.lock().await.push(cmd);
+        // 启动长连接代理
+        agent.start().await;
+        // 启动服务（用于自动发送项目心跳）,正常退出时会自动调用end api
+        service.service_start().await;
+
+        //主进程保持运行
+        loop {
+            tokio::time::sleep(Duration::from_secs(1)).await;
+        }
+    }
+
+    #[tokio::test]
+    async fn test_sqlite_handle() {
+        use bililivecmd_sqlite_handle::SqliteHandler;
+        let mut service = ApiService::new(Auth::new(env_access_key(), env_access_secret()));
+        let mut agent = service
+            .new_project(env_live_code(), env_app_id())
+            .await
+            .unwrap();
+        // 为长连接代理添加处理对象 （可选择性 是否需要处理层 或 多个处理层） raw -> proto -> cmd
+        // 使用sqlite handle 存储弹幕消息
+        let mut sqlite = SqliteHandler::new(None).await;
+        sqlite.console_saved = true;
+        let handle = Arc::new(sqlite);
         let cmd = Arc::clone(&handle);
         agent.cmd_handles.lock().await.push(cmd);
         // 启动长连接代理

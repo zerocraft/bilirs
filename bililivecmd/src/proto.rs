@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+/// https://open-live.bilibili.com/
 /// OP_HEARTBEAT : 2 客户端发送的心跳包(30秒发送一次)
 ///
 /// OP_AUTH : 7 客户端发送的鉴权包(客户端发送的第一个包)

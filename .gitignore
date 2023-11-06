@@ -19,3 +19,5 @@ Cargo.lock
 .env
 
 *.psd
+*.sqlite
+*/migration/*.md

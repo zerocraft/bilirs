@@ -1,3 +1,8 @@
 [workspace]
-members = ["bililive", "bililivecmd"]
+members = [
+    "bililive",
+    "bililivecmd",
+    "bililivecmd_sqlite_handle",
+    "bililivecmd_sqlite_handle/migration",
+]
 resolver = "2"

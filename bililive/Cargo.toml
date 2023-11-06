@@ -22,4 +22,5 @@ serde = { version = "1.0.189", features = ["serde_derive"] }
 serde_json = "1.0.107"
 thiserror = "1.0.50"
 tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread", "time"] }
-bililivecmd = { version = "0.1.2" }
+bililivecmd = { version = "0.1.3", path = "../bililivecmd" }
+bililivecmd-sqlite-handle = { version = "0.1.0", path = "../bililivecmd_sqlite_handle" }
