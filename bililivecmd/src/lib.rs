@@ -1,5 +1,5 @@
 use flate2::write::ZlibDecoder;
-use futures::{lock::Mutex, stream::SplitSink, SinkExt, StreamExt};
+use futures::{stream::SplitSink, SinkExt, StreamExt};
 use handle::{LiveCmdHandle, LiveCmdHandleOP, LiveCmdHandleRAW};
 use proto::{
     CGuard, CLike, CSendGift, CSuperChat, CSuperChatDel, LiveOpenPlatformCmd, RawProto, CDM,
@@ -9,7 +9,7 @@ use proto::{
 use serde_json::Value;
 use std::io::prelude::*;
 use std::sync::Arc;
-use tokio::{net::TcpStream, time::Duration};
+use tokio::{net::TcpStream, sync::RwLock, time::Duration};
 use tokio_tungstenite::{
     connect_async,
     tungstenite::{http::Uri, Message},
@@ -25,9 +25,9 @@ pub mod test_handle;
 pub struct CmdAgent {
     is_working: bool,
     pub params: CmdAgentParams,
-    pub raw_handles: Arc<Mutex<Vec<Arc<dyn LiveCmdHandleRAW>>>>,
-    pub op_handles: Arc<Mutex<Vec<Arc<dyn LiveCmdHandleOP>>>>,
-    pub cmd_handles: Arc<Mutex<Vec<Arc<dyn LiveCmdHandle>>>>,
+    pub raw_handles: Arc<RwLock<Vec<Arc<dyn LiveCmdHandleRAW>>>>,
+    pub op_handles: Arc<RwLock<Vec<Arc<dyn LiveCmdHandleOP>>>>,
+    pub cmd_handles: Arc<RwLock<Vec<Arc<dyn LiveCmdHandle>>>>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -45,9 +45,9 @@ impl CmdAgent {
         CmdAgent {
             params,
             is_working: false,
-            raw_handles: Arc::new(Mutex::new(Vec::new())),
-            op_handles: Arc::new(Mutex::new(Vec::new())),
-            cmd_handles: Arc::new(Mutex::new(Vec::new())),
+            raw_handles: Arc::new(RwLock::new(Vec::new())),
+            op_handles: Arc::new(RwLock::new(Vec::new())),
+            cmd_handles: Arc::new(RwLock::new(Vec::new())),
         }
     }
 
@@ -144,13 +144,13 @@ impl CmdAgent {
 #[allow(unused_must_use, clippy::let_underscore_future)]
 async fn handle(
     bytes: Vec<u8>,
-    raw_handles: &Arc<Mutex<Vec<Arc<dyn LiveCmdHandleRAW>>>>,
-    op_handles: &Arc<Mutex<Vec<Arc<dyn LiveCmdHandleOP>>>>,
-    cmd_handles: &Arc<Mutex<Vec<Arc<dyn LiveCmdHandle>>>>,
+    raw_handles: &Arc<RwLock<Vec<Arc<dyn LiveCmdHandleRAW>>>>,
+    op_handles: &Arc<RwLock<Vec<Arc<dyn LiveCmdHandleOP>>>>,
+    cmd_handles: &Arc<RwLock<Vec<Arc<dyn LiveCmdHandle>>>>,
     params: CmdAgentParams,
 ) {
     //处理原始数据
-    for raw in raw_handles.lock().await.iter() {
+    for raw in raw_handles.read().await.iter() {
         let bytes = bytes.clone();
         let params = params.clone();
         raw.handle(bytes, params).await;
@@ -174,7 +174,7 @@ async fn handle(
             handle(writer, raw_handles, op_handles, cmd_handles, params.clone());
             return;
         }
-        for op in op_handles.lock().await.iter() {
+        for op in op_handles.read().await.iter() {
             let proto: RawProto = proto.clone();
             let params = params.clone();
             op.handle(proto, params).await;
@@ -192,7 +192,7 @@ async fn handle(
                                         if let Ok(pcmd) =
                                             serde_json::from_str::<LiveOpenPlatformCmd<CDM>>(&json)
                                         {
-                                            for handle in cmd_handles.lock().await.iter() {
+                                            for handle in cmd_handles.read().await.iter() {
                                                 let params = params.clone();
                                                 handle.handle_dm(pcmd.data.clone(), params).await;
                                             }
@@ -204,7 +204,7 @@ async fn handle(
                                                 &json,
                                             )
                                         {
-                                            for handle in cmd_handles.lock().await.iter() {
+                                            for handle in cmd_handles.read().await.iter() {
                                                 let params = params.clone();
                                                 handle
                                                     .handle_send_gift(pcmd.data.clone(), params)
@@ -218,7 +218,7 @@ async fn handle(
                                                 &json,
                                             )
                                         {
-                                            for handle in cmd_handles.lock().await.iter() {
+                                            for handle in cmd_handles.read().await.iter() {
                                                 let params = params.clone();
                                                 handle
                                                     .handle_super_chat(pcmd.data.clone(), params)
@@ -232,7 +232,7 @@ async fn handle(
                                         >(
                                             &json
                                         ) {
-                                            for handle in cmd_handles.lock().await.iter() {
+                                            for handle in cmd_handles.read().await.iter() {
                                                 let params = params.clone();
                                                 handle
                                                     .handle_super_chat_del(
@@ -249,7 +249,7 @@ async fn handle(
                                                 &json,
                                             )
                                         {
-                                            for handle in cmd_handles.lock().await.iter() {
+                                            for handle in cmd_handles.read().await.iter() {
                                                 let params = params.clone();
                                                 handle
                                                     .handle_guard(pcmd.data.clone(), params)
@@ -263,7 +263,7 @@ async fn handle(
                                                 &json,
                                             )
                                         {
-                                            for handle in cmd_handles.lock().await.iter() {
+                                            for handle in cmd_handles.read().await.iter() {
                                                 let params = params.clone();
                                                 handle.handle_like(pcmd.data.clone(), params).await;
                                             }
@@ -297,11 +297,11 @@ mod tests {
         });
         let handle = Arc::new(TestHandler {});
         let raw = Arc::clone(&handle);
-        agent.raw_handles.lock().await.push(raw);
+        agent.raw_handles.write().await.push(raw);
         let op = Arc::clone(&handle);
-        agent.op_handles.lock().await.push(op);
+        agent.op_handles.write().await.push(op);
         let cmd = Arc::clone(&handle);
-        agent.cmd_handles.lock().await.push(cmd);
+        agent.cmd_handles.write().await.push(cmd);
         agent.start().await;
         loop {
             tokio::time::sleep(Duration::from_secs(10)).await;

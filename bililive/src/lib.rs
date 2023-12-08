@@ -194,7 +194,7 @@ mod tests {
         // agent.op_handles.lock().await.push(op);
         // 处理弹幕消息包（Proto.Operation==5）
         let cmd = Arc::clone(&handle);
-        agent.cmd_handles.lock().await.push(cmd);
+        agent.cmd_handles.write().await.push(cmd);
         // 启动长连接代理
         agent.start().await;
         // 启动服务（用于自动发送项目心跳）,正常退出时会自动调用end api
@@ -220,7 +220,7 @@ mod tests {
         sqlite.console_saved = true;
         let handle = Arc::new(sqlite);
         let cmd = Arc::clone(&handle);
-        agent.cmd_handles.lock().await.push(cmd);
+        agent.cmd_handles.write().await.push(cmd);
         // 启动长连接代理
         agent.start().await;
         // 启动服务（用于自动发送项目心跳）,正常退出时会自动调用end api

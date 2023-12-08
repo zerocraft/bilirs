@@ -2,8 +2,6 @@
 
 [Bilibili open-live](https://open-live.bilibili.com) SDK by Rust
 
-[bilirs](https://github.com/zerocraft/bilirs)
-
 ## 功能
 
 - API
@@ -38,11 +36,23 @@
 
 ### 安装
 
-``` shell
-cargo add bililivex
+在项目Cargo.toml中添加对应组件
+
+全部组件（包含依赖）
+
+``` toml
+bililivex = { git = "https://github.com/zerocraft/bilirs" }
 ```
 
-基础使用方法
+长连接的独立代理组件
+
+``` toml
+bililivecmd = { git = "https://github.com/zerocraft/bilirs" }
+```
+
+### 用例
+
+[详见用例代码](./bililive/src/lib.rs)
 
 ``` rust
 // 测试代码 bililive/src/lib.rs - mod tests
@@ -60,13 +70,13 @@ let handle = Arc::new(TestHandler::default());
 // // 处理原始字符串
 // let raw = Arc::clone(&handle);
 // //
-// agent.raw_handles.lock().await.push(raw);
+// agent.raw_handles.write().await.push(raw);
 // // 处理proto对象
 // let op = Arc::clone(&handle);
-// agent.op_handles.lock().await.push(op);
+// agent.op_handles.write().await.push(op);
 // 处理弹幕消息包（Proto.Operation==5）
 let cmd = Arc::clone(&handle);
-agent.cmd_handles.lock().await.push(cmd);
+agent.cmd_handles.write().await.push(cmd);
 // 启动长连接代理
 agent.start().await;
 // 启动服务（用于自动发送项目心跳）,正常退出时会自动调用end api
@@ -116,7 +126,11 @@ impl LiveCmdHandle for TestHandler {
 }
 ```
 
-## 架构
+### 复杂用例
+
+- [结合sea-orm开发直播弹幕存储工具](https://www.bilibili.com/video/BV1Pc411R7at/)
+
+## 结构
 
 ![project](doc/bilirs_crate.png)
 
